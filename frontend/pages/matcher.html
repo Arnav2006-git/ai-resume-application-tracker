@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Matcher - AI Resume Match Tracker</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <h1>📄 Resume Match Tracker</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link">Dashboard</a></li>
+                <li><a href="matcher.html" class="nav-link active">Resume Matcher</a></li>
+                <li><a href="tracker.html" class="nav-link">Application Tracker</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h2>Resume Matcher</h2>
+            
+            <div class="matcher-container">
+                <!-- Resume Section -->
+                <section class="resume-section">
+                    <h3>Step 1: Upload Your Resume</h3>
+                    
+                    <div id="resumeStatus" class="info-box hidden">
+                        <p id="resumeStatusText"></p>
+                    </div>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="resumeFile" accept=".pdf,.docx,.txt" hidden>
+                        <label for="resumeFile" class="upload-label">
+                            <span class="upload-icon">📁</span>
+                            <span>Click to upload or drag your resume here</span>
+                            <span class="upload-hint">(PDF, DOCX, or TXT)</span>
+                        </label>
+                    </div>
+                    
+                    <button id="uploadBtn" class="btn btn-primary" style="display:none;">Upload Resume</button>
+                    
+                    <div id="resumeInfo" class="resume-info hidden">
+                        <h4>Resume Information</h4>
+                        <p><strong>File:</strong> <span id="resumeFileName"></span></p>
+                        <p><strong>Extracted Skills:</strong> <span id="resumeSkills"></span></p>
+                        <p><strong>Keywords Found:</strong> <span id="resumeKeywords"></span></p>
+                    </div>
+                </section>
+
+                <!-- Job Description Section -->
+                <section class="job-section">
+                    <h3>Step 2: Paste Job Description</h3>
+                    
+                    <form id="matchForm">
+                        <div class="form-group">
+                            <label for="companyName">Company Name</label>
+                            <input type="text" id="companyName" placeholder="e.g., Google">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="jobTitle">Job Title</label>
+                            <input type="text" id="jobTitle" placeholder="e.g., Software Engineer">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="jobUrl">Job URL (Optional)</label>
+                            <input type="url" id="jobUrl" placeholder="https://example.com/job">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="jobDescription">Job Description</label>
+                            <textarea id="jobDescription" placeholder="Paste the job description here..." rows="8"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" id="matchBtn">Match Resume</button>
+                        <button type="reset" class="btn btn-secondary">Clear</button>
+                    </form>
+                </section>
+
+                <!-- Results Section -->
+                <section class="results-section" id="resultsSection" style="display:none;">
+                    <h3>Match Results</h3>
+                    
+                    <!-- Score Display -->
+                    <div class="score-display">
+                        <div class="score-circle" id="scoreCircle">
+                            <span class="score-value" id="scoreValue">0%</span>
+                        </div>
+                        <div class="score-info">
+                            <p id="scoreMessage"></p>
+                        </div>
+                    </div>
+
+                    <!-- Keywords Comparison -->
+                    <div class="keywords-section">
+                        <div class="keywords-group">
+                            <h4>✅ Matching Keywords (<span id="matchingCount">0</span>)</h4>
+                            <div id="matchingKeywords" class="keywords-list"></div>
+                        </div>
+                        
+                        <div class="keywords-group">
+                            <h4>❌ Missing Keywords (<span id="missingCount">0</span>)</h4>
+                            <div id="missingKeywords" class="keywords-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Suggestions -->
+                    <div class="suggestions-section">
+                        <h4>💡 Improvement Suggestions</h4>
+                        <ul id="suggestionsList" class="suggestions-list"></ul>
+                    </div>
+
+                    <!-- Save Application -->
+                    <div class="save-application">
+                        <button id="saveAppBtn" class="btn btn-success">Save as Application</button>
+                        <button id="downloadResultBtn" class="btn btn-secondary">Download Results</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 AI Resume Match Tracker. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script src="../js/matcher.js"></script>
+</body>
+</html>

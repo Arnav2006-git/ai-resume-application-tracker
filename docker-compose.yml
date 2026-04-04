@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: resume_tracker_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=backend/app.py
+      - SECRET_KEY=your-secret-key
+      - JWT_SECRET_KEY=your-jwt-secret-key
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/resume_tracker
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app/backend
+      - ./uploads:/app/uploads
+    command: gunicorn --bind 0.0.0.0:5000 backend.app:app
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: resume_tracker_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_BASE_URL=http://localhost:5000/api
+
+  db:
+    image: postgres:15
+    container_name: resume_tracker_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=resume_tracker
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
