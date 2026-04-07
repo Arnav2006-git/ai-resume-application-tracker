@@ -102,31 +102,31 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <div className="header-content">
-          <h1 className="app-title">📝 Resume Match</h1>
-          <p className="app-subtitle">Analyze and track your job applications</p>
+        <div className="header-top">
+          <div className="header-branding">
+            <h1 className="app-title">ResumeIQ</h1>
+          </div>
+          <nav className="app-nav">
+            <button
+              className={`nav-button ${currentPage === 'matcher' ? 'active' : ''}`}
+              onClick={() => setCurrentPage('matcher')}
+            >
+              🔍 Analyzer
+            </button>
+            <button
+              className={`nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
+              onClick={() => setCurrentPage('dashboard')}
+            >
+              📊 Dashboard
+            </button>
+            <button
+              className={`nav-button ${currentPage === 'form' ? 'active' : ''}`}
+              onClick={() => setCurrentPage('form')}
+            >
+              ➕ Add Application
+            </button>
+          </nav>
         </div>
-        
-        <nav className="app-nav">
-          <button
-            className={`nav-button ${currentPage === 'matcher' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('matcher')}
-          >
-            🔍 Resume Matcher
-          </button>
-          <button
-            className={`nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('dashboard')}
-          >
-            📊 Dashboard
-          </button>
-          <button
-            className={`nav-button ${currentPage === 'form' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('form')}
-          >
-            ➕ Log Application
-          </button>
-        </nav>
       </header>
 
       <main className="app-main">
@@ -152,36 +152,38 @@ function App() {
             )}
 
             <div className="form-section">
-              <div className="form-card">
-                <h2 className="section-title">Step 1: Upload Your Resume</h2>
-                <div className="upload-area">
-                  <label htmlFor="resume-input" className="upload-label">
-                    <div className="upload-content">
-                      <span className="upload-icon">📄</span>
-                      <span className="upload-text">
-                        {fileName ? `Selected: ${fileName}` : 'Click to upload PDF or DOCX'}
-                      </span>
-                      <span className="upload-hint">or drag and drop here</span>
-                    </div>
-                  </label>
-                  <input
-                    id="resume-input"
-                    type="file"
-                    accept=".pdf,.docx"
-                    onChange={handleResumeUpload}
-                    className="file-input"
+              <div className="input-grid">
+                <div className="form-card">
+                  <h3 className="section-title">Upload Resume</h3>
+                  <div className="upload-area">
+                    <label htmlFor="resume-input" className="upload-label">
+                      <div className="upload-content">
+                        <span className="upload-icon">📄</span>
+                        <span className="upload-text">
+                          {fileName ? `Selected: ${fileName}` : 'Click to upload PDF or DOCX'}
+                        </span>
+                        <span className="upload-hint">or drag and drop</span>
+                      </div>
+                    </label>
+                    <input
+                      id="resume-input"
+                      type="file"
+                      accept=".pdf,.docx"
+                      onChange={handleResumeUpload}
+                      className="file-input"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-card">
+                  <h3 className="section-title">Job Description</h3>
+                  <textarea
+                    className="job-textarea"
+                    placeholder="Paste the job description here..."
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
                   />
                 </div>
-              </div>
-
-              <div className="form-card">
-                <h2 className="section-title">Step 2: Paste Job Description</h2>
-                <textarea
-                  className="job-textarea"
-                  placeholder="Paste the job description here..."
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                />
               </div>
 
               <div className="button-group">
@@ -212,7 +214,7 @@ function App() {
             {results && (
               <div className="results-section">
                 <div className="results-card">
-                  <h2 className="results-title">📊 Analysis Results</h2>
+                  <h2 className="results-title">Analysis Results</h2>
 
                   <div className="result-item">
                     <h3>Match Score</h3>
