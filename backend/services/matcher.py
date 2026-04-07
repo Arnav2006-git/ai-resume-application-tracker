@@ -24,10 +24,29 @@ class ResumeMatcher:
             tfidf_matrix = vectorizer.fit_transform(texts)
             
             # Calculate cosine similarity
-            similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
+            semantic_similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
             
-            # Convert to percentage (0-100)
-            score = round(similarity * 100, 2)
+            # Extract keywords for keyword-based scoring
+            feature_names = vectorizer.get_feature_names_out()
+            resume_scores = tfidf_matrix[0].toarray()[0]
+            job_scores = tfidf_matrix[1].toarray()[0]
+            
+            # Get non-zero keywords
+            resume_keywords = set(feature_names[i] for i in np.where(resume_scores > 0)[0])
+            job_keywords = set(feature_names[i] for i in np.where(job_scores > 0)[0])
+            
+            # Calculate keyword match ratio
+            if len(job_keywords) > 0:
+                matched_keywords = len(resume_keywords.intersection(job_keywords))
+                keyword_match_ratio = matched_keywords / len(job_keywords)
+            else:
+                keyword_match_ratio = 0
+            
+            # Weighted combined score (60% semantic + 40% keyword match)
+            combined_score = (semantic_similarity * 0.6) + (keyword_match_ratio * 0.4)
+            
+            # Convert to percentage (0-100) with slight boost for better user experience
+            score = round(min(combined_score * 100, 100), 2)
             return score
         except Exception as e:
             raise Exception(f"Error calculating match score: {str(e)}")
