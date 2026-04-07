@@ -154,5 +154,3 @@ function exportAsCSV(data, filename) {
     link.click();
     URL.revokeObjectURL(url);
 }
-
-export { apiCall, USER_ID, loadStats, showNotification, formatDate, createKeywordTag, isFileSizeValid, exportAsJSON, exportAsCSV };
