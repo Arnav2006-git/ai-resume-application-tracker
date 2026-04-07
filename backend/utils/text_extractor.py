@@ -3,6 +3,36 @@ import PyPDF2
 from docx import Document
 import re
 
+# Common English stop words to filter out
+STOP_WORDS = {
+    'a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 
+    'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 
+    'between', 'both', 'by', 'can', 'could', 'did', 'do', 'does', 'doing', 'down', 
+    'during', 'each', 'few', 'for', 'from', 'further', 'had', 'has', 'have', 'having', 
+    'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 
+    'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'just', 'me', 'might', 'more', 
+    'most', 'must', 'my', 'myself', 'no', 'nor', 'not', 'of', 'off', 'on', 'only', 
+    'or', 'other', 'out', 'over', 'own', 'same', 'should', 'so', 'some', 'such', 
+    'than', 'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 
+    'these', 'they', 'this', 'those', 'to', 'too', 'under', 'until', 'up', 'very', 
+    'was', 'we', 'were', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 
+    'why', 'with', 'you', 'your', 'yours', 'yourself', 'yourselves', 'also', 'are', 
+    'as', 'be', 'been', 'but', 'by', 'even', 'get', 'had', 'has', 'have', 'he', 
+    'see', 'she', 'such', 'us', 'use', 'using', 'would', 'year', 'years', 'work', 'working',
+    'developed', 'responsible', 'supported', 'led', 'managed', 'created',  # common resume verbs
+    # Generic/common words that aren't meaningful skills
+    'new', 'related', 'full', 'control', 'modern', 'computer', 'team', 'teams',
+    'experience', 'basic', 'currently', 'closely', 'applications', 'application',
+    'science', 'skills', 'engineering', 'code', 'version', 'build', 'building',
+    'communication', 'collaborate', 'debug', 'degree', 'bachelor', 'master',
+    'backend', 'frontend', 'data', 'integration', 'internship', 'tools', 'tool',
+    'requirement', 'requirements', 'required', 'strong', 'excellent', 'good',
+    'ability', 'abilities', 'knowledge', 'understanding', 'experience', 'background',
+    'technical', 'technical', 'role', 'position', 'job', 'work', 'project', 'projects',
+    'team', 'company', 'organization', 'industry', 'field', 'area', 'level',
+    'opportunity', 'opportunities', 'member', 'developer', 'developer', 'engineer'
+}
+
 
 def extract_from_pdf(filepath):
     """Extract text from PDF file"""
@@ -63,13 +93,18 @@ def clean_text(text):
 
 
 def extract_keywords(text, min_length=3):
-    """Extract keywords from text"""
+    """Extract keywords from text, filtering out stop words"""
     # Clean text
     text = clean_text(text.lower())
     # Split into words
     words = text.split()
-    # Filter by length and unique
-    keywords = list(set([w for w in words if len(w) >= min_length and w.isalpha()]))
+    # Filter by length, uniqueness, and stop words
+    keywords = list(set([
+        w for w in words 
+        if len(w) >= min_length 
+        and w.isalpha() 
+        and w not in STOP_WORDS
+    ]))
     return sorted(keywords)
 
 
