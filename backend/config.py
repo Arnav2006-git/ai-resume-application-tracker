@@ -20,6 +20,10 @@ class Config:
         'DATABASE_URL',
         'sqlite:///resume_tracker.db'
     )
+    
+    # Gemini API Configuration
+    GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
+    GEMINI_MODEL = 'gemini-1.5-flash'
 
 
 class DevelopmentConfig(Config):

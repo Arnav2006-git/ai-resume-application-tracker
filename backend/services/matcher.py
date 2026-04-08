@@ -2,14 +2,43 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+from services.ai_analyzer import AIResumeAnalyzer
 
 
 class ResumeMatcher:
     """Handle resume to job description matching"""
     
     @staticmethod
-    def calculate_match_score(resume_text, job_description):
-        """Calculate similarity score between resume and job description"""
+    def calculate_match_score(resume_text, job_description, use_ai=True):
+        """Calculate similarity score between resume and job description using AI or TF-IDF"""
+        try:
+            # Try AI-based matching first
+            if use_ai:
+                try:
+                    ai_match = AIResumeAnalyzer.match_resume_with_job(resume_text, job_description)
+                    # Normalize AI response to standard format
+                    return {
+                        'match_score': ai_match.get('match_score', 0),
+                        'match_percentage': str(ai_match.get('match_score', 0)) + '%',
+                        'matching_skills': ai_match.get('matching_skills', []),
+                        'missing_skills': ai_match.get('missing_skills', []),
+                        'matching_keywords': ai_match.get('matching_skills', []),
+                        'missing_keywords': ai_match.get('missing_skills', []),
+                        'suggestions': ai_match.get('improvement_suggestions', []),
+                        'method': 'ai',
+                        'overall_assessment': ai_match.get('overall_assessment', '')
+                    }
+                except Exception as ai_error:
+                    print(f"Warning: AI matching failed, falling back to TF-IDF: {str(ai_error)}")
+            
+            # Fallback to TF-IDF matching
+            return ResumeMatcher._calculate_tfidf_score(resume_text, job_description)
+        except Exception as e:
+            raise Exception(f"Error calculating match score: {str(e)}")
+    
+    @staticmethod
+    def _calculate_tfidf_score(resume_text, job_description):
+        """Calculate similarity score using TF-IDF (fallback method)"""
         try:
             # Create TF-IDF vectors
             vectorizer = TfidfVectorizer(
@@ -47,9 +76,27 @@ class ResumeMatcher:
             
             # Convert to percentage (0-100) with slight boost for better user experience
             score = round(min(combined_score * 100, 100), 2)
-            return score
+            
+            matching_list = list(resume_keywords.intersection(job_keywords))
+            missing_list = list(job_keywords - resume_keywords)
+            
+            return {
+                'match_score': int(score),
+                'match_percentage': f"{int(score)}%",
+                'matching_skills': matching_list[:10],
+                'missing_skills': missing_list[:10],
+                'matching_keywords': matching_list,
+                'missing_keywords': missing_list,
+                'suggestions': ResumeMatcher.generate_suggestions(
+                    list(resume_keywords), 
+                    list(job_keywords), 
+                    missing_list, 
+                    score
+                ),
+                'method': 'tfidf'
+            }
         except Exception as e:
-            raise Exception(f"Error calculating match score: {str(e)}")
+            raise Exception(f"Error calculating TF-IDF match score: {str(e)}")
     
     @staticmethod
     def find_matching_keywords(resume_keywords, job_keywords):

@@ -16,6 +16,7 @@ class Resume(db.Model):
     extracted_skills = db.Column(db.JSON, default=list)
     extracted_keywords = db.Column(db.JSON, default=list)
     parsed_data = db.Column(db.JSON, default=dict)
+    ai_analysis = db.Column(db.JSON, nullable=True)  # Store AI analysis from Gemini
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -34,6 +35,7 @@ class Resume(db.Model):
             'file_type': self.file_type,
             'extracted_skills': self.extracted_skills,
             'extracted_keywords': self.extracted_keywords,
+            'ai_analysis': self.ai_analysis,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }

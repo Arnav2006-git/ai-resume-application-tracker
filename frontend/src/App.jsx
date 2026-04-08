@@ -44,21 +44,28 @@ function App() {
     setError(null)
 
     try {
-      // Call the backend API
-      const response = await matchingAPI.quickMatch(resumeText, jobDescription)
+      // Call the backend API with new AI-based matching
+      const response = await matchingAPI.quickMatch(resumeText, jobDescription, true)
+
+      // Extract numeric match score
+      let matchScore = response.match_score || 0
+      if (typeof matchScore === 'string') {
+        matchScore = parseFloat(matchScore.replace('%', '')) || 0
+      }
 
       // Transform backend response to match UI expectations
       setResults({
-        matchScore: response.overall_score,
-        matchPercentage: response.match_percentage,
-        matchCount: response.matching_count,
-        missingCount: response.missing_count,
-        matchedKeywords: response.matching_keywords,
-        missingKeywords: response.missing_keywords,
-        suggestions: response.suggestions,
+        matchScore: Math.round(matchScore),
+        matchPercentage: matchScore,
+        matchCount: response.matching_skills?.length || response.matching_keywords?.length || 0,
+        missingCount: response.missing_skills?.length || response.missing_keywords?.length || 0,
+        matchedKeywords: response.matching_skills || response.matching_keywords || [],
+        missingKeywords: response.missing_skills || response.missing_keywords || [],
+        suggestions: response.improvement_suggestions || response.suggestions || [],
       })
     } catch (err) {
       setError(`Analysis failed: ${err.message}. Make sure the backend is running on http://127.0.0.1:5000`)
+      console.error('Analysis error:', err)
     } finally {
       setLoading(false)
     }
@@ -138,6 +145,16 @@ function App() {
                 <span className="error-icon">⚠️</span>
                 <div>
                   <strong>Error:</strong> {error}
+                  <details style={{ marginTop: '10px', fontSize: '12px', color: '#666' }}>
+                    <summary>Debug Info (click to expand)</summary>
+                    <p>Make sure:</p>
+                    <ul>
+                      <li>Backend is running: http://127.0.0.1:5000</li>
+                      <li>Gemini API key is set in backend/.env</li>
+                      <li>Resume file was successfully extracted</li>
+                      <li>Job description is not empty</li>
+                    </ul>
+                  </details>
                 </div>
               </div>
             )}

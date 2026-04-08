@@ -30,7 +30,7 @@ STOP_WORDS = {
     'ability', 'abilities', 'knowledge', 'understanding', 'experience', 'background',
     'technical', 'technical', 'role', 'position', 'job', 'work', 'project', 'projects',
     'team', 'company', 'organization', 'industry', 'field', 'area', 'level',
-    'opportunity', 'opportunities', 'member', 'developer', 'developer', 'engineer'
+    'opportunity', 'opportunities', 'member', 'developer', 'developer', 'engineer','across'
 }
 
 
@@ -38,11 +38,30 @@ def extract_from_pdf(filepath):
     """Extract text from PDF file"""
     try:
         text = []
-        with open(filepath, 'rb') as file:
-            pdf_reader = PyPDF2.PdfReader(file)
-            for page in pdf_reader.pages:
-                text.append(page.extract_text())
-        return '\n'.join(text)
+        try:
+            with open(filepath, 'rb') as file:
+                pdf_reader = PyPDF2.PdfReader(file)
+                # Check if PDF is encrypted
+                if pdf_reader.is_encrypted:
+                    pdf_reader.decrypt('')
+                
+                # Extract text from all pages
+                for page_num, page in enumerate(pdf_reader.pages):
+                    try:
+                        page_text = page.extract_text()
+                        if page_text:
+                            text.append(page_text)
+                    except Exception as page_error:
+                        print(f"Warning: Could not extract text from page {page_num}: {page_error}")
+                        continue
+                
+                if not text:
+                    raise Exception("No text could be extracted from PDF. The PDF may be scanned or corrupted.")
+                
+                return '\n'.join(text)
+        except Exception as e:
+            # If standard extraction fails, provide better error message
+            raise Exception(f"Error extracting PDF - ensure it's a valid PDF file with text content: {str(e)}")
     except Exception as e:
         raise Exception(f"Error extracting PDF: {str(e)}")
 

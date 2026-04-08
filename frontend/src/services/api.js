@@ -71,8 +71,20 @@ export const resumeAPI = {
  */
 export const matchingAPI = {
   // Quick match without database save
-  quickMatch: async (resumeText, jobDescription) => {
+  quickMatch: async (resumeText, jobDescription, useAI = true) => {
     return apiCall('/matching/quick-match', {
+      method: 'POST',
+      body: JSON.stringify({
+        resume_text: resumeText,
+        job_description: jobDescription,
+        use_ai: useAI,
+      }),
+    });
+  },
+
+  // Semantic ATS matching (quick)
+  semanticATSQuick: async (resumeText, jobDescription) => {
+    return apiCall('/matching/semantic-ats', {
       method: 'POST',
       body: JSON.stringify({
         resume_text: resumeText,
@@ -81,8 +93,22 @@ export const matchingAPI = {
     });
   },
 
+  // Semantic ATS matching (full with database save)
+  semanticATSFull: async (jobDescription, companyName = '', jobTitle = '', userId = 'default_user', jobUrl = '') => {
+    return apiCall('/matching/semantic-ats/full', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_id: userId,
+        job_description: jobDescription,
+        company_name: companyName,
+        job_title: jobTitle,
+        job_url: jobUrl,
+      }),
+    });
+  },
+
   // Full match with database save
-  match: async (jobDescription, companyName = '', jobTitle = '', userId = 'default_user') => {
+  match: async (jobDescription, companyName = '', jobTitle = '', userId = 'default_user', useAI = true) => {
     return apiCall('/matching/match', {
       method: 'POST',
       body: JSON.stringify({
@@ -90,6 +116,7 @@ export const matchingAPI = {
         job_description: jobDescription,
         company_name: companyName,
         job_title: jobTitle,
+        use_ai: useAI,
       }),
     });
   },

@@ -25,6 +25,8 @@ class Application(db.Model):
     deadline = db.Column(db.DateTime, nullable=True)
     notes = db.Column(db.Text, default='')
     job_url = db.Column(db.String(500), default='')
+    analysis_method = db.Column(db.String(50), default='tfidf')  # 'ai' or 'tfidf'
+    ai_analysis = db.Column(db.JSON, nullable=True)  # Store AI analysis results
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -49,6 +51,8 @@ class Application(db.Model):
             'deadline': self.deadline.isoformat() if self.deadline else None,
             'notes': self.notes,
             'job_url': self.job_url,
+            'analysis_method': self.analysis_method,
+            'ai_analysis': self.ai_analysis,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }

@@ -16,6 +16,8 @@ class DatabaseService:
             if existing:
                 db.session.delete(existing)
             
+            ai_analysis = parsed_data.get('ai_analysis')
+            
             resume = Resume(
                 user_id=user_id,
                 filename=filename,
@@ -24,7 +26,8 @@ class DatabaseService:
                 raw_text=raw_text,
                 extracted_skills=skills,
                 extracted_keywords=keywords,
-                parsed_data=parsed_data
+                parsed_data=parsed_data,
+                ai_analysis=ai_analysis
             )
             db.session.add(resume)
             db.session.commit()
@@ -80,7 +83,8 @@ class DatabaseService:
     # Application operations
     @staticmethod
     def create_application(user_id, resume_id, company_name, job_title, job_description, 
-                          match_score, matching_keywords, missing_keywords, suggestions, job_url=''):
+                          match_score, matching_keywords, missing_keywords, suggestions, job_url='',
+                          analysis_method='tfidf', ai_analysis=None):
         """Create a new application record"""
         try:
             application = Application(
@@ -94,7 +98,9 @@ class DatabaseService:
                 missing_keywords=missing_keywords,
                 suggested_improvements=suggestions,
                 job_url=job_url,
-                status='Applied'
+                status='Applied',
+                analysis_method=analysis_method,
+                ai_analysis=ai_analysis
             )
             db.session.add(application)
             db.session.commit()

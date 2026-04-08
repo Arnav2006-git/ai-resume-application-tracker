@@ -7,6 +7,14 @@
   margin: 0 auto;
 }
 
+.applications-list .application-card .app-info .app-title {
+  color: #000000 !important;
+  -webkit-text-fill-color: unset !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+}
+
 /* Statistics Section */
 .stats-section {
   margin-bottom: 48px;
@@ -229,11 +237,15 @@
   margin: 0 0 4px 0;
 }
 
-.app-title {
+.applications-list .application-card .app-title {
   font-size: 0.9rem;
-  color: var(--text-gray);
-  font-weight: 500;
+  color: #000000 !important;
+  font-weight: 600;
   margin: 0;
+  -webkit-text-fill-color: unset !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
 }
 
 .app-meta {
@@ -256,9 +268,14 @@
   font-size: 0.85rem;
   font-weight: 500;
   background-color: var(--bg-light);
-  color: var(--text-dark);
+  color: #000000;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.status-select option {
+  color: #000000;
+  background-color: #ffffff;
 }
 
 .status-select:focus {
