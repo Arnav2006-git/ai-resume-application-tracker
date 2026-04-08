@@ -560,9 +560,6 @@ body {
   justify-content: center;
   min-height: 40px;
 }
-  gap: 8px;
-  min-height: 44px;
-}
 
 .save-to-tracker-button:hover {
   background-color: #059669;

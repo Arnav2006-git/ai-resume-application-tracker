@@ -2,7 +2,8 @@
  * API Service - Handle all backend communication
  */
 
-const API_BASE_URL = 'http://127.0.0.1:5000/api';
+// Get API base URL from environment or use default
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api';
 
 // Utility to handle API responses
 const handleResponse = async (response) => {
